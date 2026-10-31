@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registry Insight — starter</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Registry Insight · ข้อมูลจริงจาก data.go.th</p>
+    <h1>แดชบอร์ดธุรกิจจดทะเบียนใหม่ยังไม่พร้อม</h1>
+    <p class="lead">ตัวเลขด้านล่างมาจากตัวอ่านไฟล์ชุดเริ่มต้น (ข้อมูลจริง กรมพัฒนาธุรกิจการค้า พ.ศ. 2558) เกตคุณภาพตั้งใจให้ไม่ผ่านจนกว่าจะทำความสะอาดข้อมูลและแก้ตัวรับคำขอ</p>
+    <section class="cards" id="cards">
+      <article><h2>กิจการที่ตัวอ่านเห็น</h2><p id="companies">…</p></article>
+      <article><h2>ทุนจดทะเบียนรวม (บาท)</h2><p id="capital">…</p></article>
+    </section>
+    <p id="status" class="status">กำลังโหลด</p>
+
+    <section class="notes" id="notes-box" aria-labelledby="notes-heading">
+      <h2 id="notes-heading">โน้ต</h2>
+      <p class="lead">บนเครื่องคุณ โน้ตต้องถูกเขียนลง <code>data/notes.json</code> เพื่อให้ด่าน <code>notes-persists</code> ผ่านหลังรีสตาร์ท ชุดเริ่มยังเก็บแค่ในหน่วยความจำ จึงหายเมื่อปิดเซิร์ฟเวอร์</p>
+      <p class="lead">บน Vercel (<code>VERCEL</code>) โน้ตเป็นอ่านอย่างเดียว ห้ามเขียนไฟล์ เพราะดิสก์ของฟังก์ชันไม่ถาวร</p>
+      <form id="note-form">
+        <label for="note-text">บันทึกโน้ตบนเครื่องนี้</label>
+        <textarea id="note-text" name="text" maxlength="200" required placeholder="พิมพ์โน้ตสั้น ๆ"></textarea>
+        <button type="submit">บันทึก</button>
+      </form>
+      <ul id="note-list"></ul>
+      <p id="note-status" class="status"></p>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
