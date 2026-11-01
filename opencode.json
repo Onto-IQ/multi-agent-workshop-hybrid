@@ -1,0 +1,29 @@
+{
+  // รูปแบบ permission ของ OpenCode เปลี่ยนตามรุ่น อย่าถือว่าบล็อกด้านล่างใช้ได้ทุกเวอร์ชัน
+  // รุ่น 1 ใช้คีย์ "permission" และชื่อ action "bash" กับ "edit" แบบในไฟล์นี้
+  // รุ่น 2 ใช้คีย์ "permissions" เป็นอาเรย์ และเปลี่ยน "bash" เป็น "shell"
+  // ถ้ารุ่นที่ติดตั้งบ่นเรื่องรูปแบบ ให้ปรับตามข้อความ error
+  // แต่ต้องยังห้ามแก้ scripts/quality-gate.js และห้าม git push
+  // ห้ามวางค่าคีย์ลงไฟล์ ใช้ {env:OPENROUTER_API_KEY} เท่านั้น
+  // ANTHROPIC_API_KEY ต้องว่าง ผู้เรียนใช้บัญชี Claude ของศูนย์ฝึก
+  "$schema": "https://opencode.ai/config.json",
+  "model": "{env:OPENCODE_MODEL}",
+  "provider": {
+    "openrouter": {
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY}"
+      }
+    }
+  },
+  "permission": {
+    "edit": {
+      "*": "allow",
+      "scripts/quality-gate.js": "deny"
+    },
+    "bash": {
+      "*": "allow",
+      "git push": "deny",
+      "git push *": "deny"
+    }
+  }
+}
