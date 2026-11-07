@@ -98,6 +98,16 @@ function summaryFromCsv() {
   };
 }
 
+function provinceTopFromCsv(limit = 5) {
+  const text = fs.readFileSync(CSV_PATH, 'utf8');
+  const { byProvince } = analyze(text).stats;
+  const top = Object.entries(byProvince)
+    .map(([province, capital]) => ({ province, capital }))
+    .sort((a, b) => b.capital - a.capital)
+    .slice(0, limit);
+  return { top };
+}
+
 function contentType(filePath) {
   if (filePath.endsWith('.css')) return 'text/css; charset=utf-8';
   if (filePath.endsWith('.js')) return 'text/javascript; charset=utf-8';
@@ -156,6 +166,15 @@ const server = http.createServer((req, res) => {
     } catch (err) {
       console.error('summary failed', err);
       return sendJson(res, 500, { error: 'SUMMARY_FAILED' });
+    }
+  }
+
+  if (url.pathname === '/api/provinces/top' && req.method === 'GET') {
+    try {
+      return sendJson(res, 200, provinceTopFromCsv());
+    } catch (err) {
+      console.error('provinces/top failed', err);
+      return sendJson(res, 500, { error: 'PROVINCES_TOP_FAILED' });
     }
   }
 

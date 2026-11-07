@@ -13,6 +13,25 @@ async function loadSummary() {
   }
 }
 
+async function loadProvinceTop() {
+  const list = document.getElementById('province-top');
+  const status = document.getElementById('province-status');
+  try {
+    const res = await fetch('/api/provinces/top');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = await res.json();
+    list.replaceChildren();
+    for (const row of Array.isArray(body.top) ? body.top : []) {
+      const item = document.createElement('li');
+      item.textContent = `${row.province} — ${Number(row.capital).toLocaleString('th-TH')} บาท`;
+      list.appendChild(item);
+    }
+    status.textContent = '';
+  } catch (err) {
+    status.textContent = 'โหลดอันดับจังหวัดไม่สำเร็จ';
+  }
+}
+
 function renderNotes(notes) {
   const list = document.getElementById('note-list');
   list.replaceChildren();
@@ -75,4 +94,5 @@ async function saveNote(event) {
 
 document.getElementById('note-form').addEventListener('submit', saveNote);
 loadSummary();
+loadProvinceTop();
 loadNotes();
