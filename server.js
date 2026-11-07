@@ -31,14 +31,34 @@ const HOST = '127.0.0.1';
 const ROOT = __dirname;
 const CSV_PATH = path.join(ROOT, 'data', 'dataset.csv');
 const WEB_ROOT = path.join(ROOT, 'web');
-
-// Sample value for the guardrails lab. It is not a live credential.
-const SAMPLE_TOKEN = 'sk-sample-not-a-real-key';
-const notes = [];
+const NOTES_PATH = path.join(ROOT, 'data', 'notes.json');
+const MAX_NOTE_LENGTH = 200;
 
 function notesAreReadOnly() {
   return Boolean(process.env.VERCEL);
 }
+
+// Load saved notes at boot. A missing or unreadable file starts an empty list.
+function loadNotes() {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(NOTES_PATH, 'utf8'));
+    const list = Array.isArray(parsed) ? parsed : parsed && parsed.notes;
+    if (!Array.isArray(list)) return [];
+    return list.filter((n) => n && typeof n.text === 'string').map((n) => ({ text: n.text }));
+  } catch (err) {
+    if (err.code !== 'ENOENT') console.error('notes load failed, starting empty', err.message);
+    return [];
+  }
+}
+
+// Laptop only: write to a temp file then rename so a crash mid-write keeps the old file.
+function saveNotes(list) {
+  const tmp = `${NOTES_PATH}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify({ notes: list }, null, 2), 'utf8');
+  fs.renameSync(tmp, NOTES_PATH);
+}
+
+const notes = notesAreReadOnly() ? [] : loadNotes();
 
 function sendJson(res, status, body, extraHeaders) {
   const payload = JSON.stringify(body);
@@ -126,7 +146,7 @@ const server = http.createServer((req, res) => {
 
   // Lab 11 maps this route to api/health.js. Production returns { ok: true } only.
   if (url.pathname === '/api/health' && req.method === 'GET') {
-    return sendJson(res, 200, { ok: true, sampleToken: SAMPLE_TOKEN });
+    return sendJson(res, 200, { ok: true });
   }
 
   // Lab 11 maps this route to api/summary.js and bundles data/dataset.csv.
@@ -152,11 +172,26 @@ const server = http.createServer((req, res) => {
       raw += chunk;
     });
     req.on('end', () => {
-      // Starter bug: invalid JSON throws and takes the process down.
-      // Valid notes stay in memory and disappear on restart, so
-      // notes-persists stays red until the lab writes data/notes.json.
-      const body = JSON.parse(raw);
-      notes.push({ text: String(body.text || '').slice(0, 200) });
+      let body;
+      try {
+        body = JSON.parse(raw);
+      } catch {
+        return sendJson(res, 400, { ok: false, error: 'INVALID_JSON' });
+      }
+      const text = body && typeof body === 'object' && typeof body.text === 'string'
+        ? body.text.trim()
+        : '';
+      if (!text) {
+        return sendJson(res, 400, { ok: false, error: 'TEXT_REQUIRED' });
+      }
+      const next = [...notes, { text: text.slice(0, MAX_NOTE_LENGTH) }];
+      try {
+        saveNotes(next);
+      } catch (err) {
+        console.error('notes save failed', err);
+        return sendJson(res, 500, { ok: false, error: 'NOTES_SAVE_FAILED' });
+      }
+      notes.splice(0, notes.length, ...next);
       sendJson(res, 201, { ok: true, count: notes.length });
     });
     return;
