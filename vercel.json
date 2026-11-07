@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "web/**", "use": "@vercel/static" },
+    {
+      "src": "api/summary.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["data/dataset.csv", "lib/**"] }
+    },
+    { "src": "api/health.js", "use": "@vercel/node" },
+    { "src": "api/notes.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/summary", "dest": "/api/summary.js" },
+    { "src": "/api/health", "dest": "/api/health.js" },
+    { "src": "/api/notes", "dest": "/api/notes.js" },
+    { "src": "/", "dest": "/web/index.html" },
+    { "src": "/(.+)", "dest": "/web/$1" }
+  ]
+}

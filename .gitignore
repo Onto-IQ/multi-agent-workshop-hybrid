@@ -22,3 +22,4 @@ Thumbs.db
 usage.json
 payload-*.json
 data/notes.json
+.vercel
