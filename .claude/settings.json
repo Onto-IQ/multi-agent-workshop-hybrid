@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push)",
+      "Bash(git push *)",
+      "Edit(scripts/quality-gate.js)",
+      "Write(scripts/quality-gate.js)"
+    ]
+  }
+}
