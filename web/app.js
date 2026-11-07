@@ -6,8 +6,8 @@ async function loadSummary() {
     const res = await fetch('/api/summary');
     const body = await res.json();
     document.getElementById('companies').textContent = body.companyCount;
-    document.getElementById('capital').textContent = body.totalCapital;
-    status.textContent = 'โหลด /api/summary แล้ว — อย่าใช้ตัวเลขนี้ตัดสินใจจนกว่า quality gate จะผ่าน';
+    document.getElementById('capital').textContent = body.totalCapital.toLocaleString('th-TH');
+    status.textContent = `แหล่งข้อมูล: data.go.th นิติบุคคลที่จดทะเบียนจัดตั้งใหม่ พ.ศ. 2558 (จาก ${body.source})`;
   } catch (err) {
     status.textContent = 'โหลดสรุปไม่สำเร็จ';
   }

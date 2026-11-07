@@ -23,6 +23,8 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { parseCsv } = require('./lib/csv');
+const { analyze } = require('./lib/inspect-data');
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = '127.0.0.1';
@@ -68,19 +70,11 @@ function naiveMoney(value) {
 
 function summaryFromCsv() {
   const text = fs.readFileSync(CSV_PATH, 'utf8');
-  const records = naiveRecords(text);
-  let totalCapital = 0;
-  let companyCount = 0;
-  for (const record of records) {
-    const capital = naiveMoney(record.capital_raw);
-    if (!record.reg_no) continue;
-    totalCapital += capital;
-    companyCount += 1;
-  }
+  const result = analyze(text);
   return {
-    companyCount,
-    totalCapital: Math.round(totalCapital * 100) / 100,
-    source: 'starter-parser',
+    companyCount: result.stats.companyCount,
+    totalCapital: result.stats.totalCapital,
+    source: 'inspect-data.js',
   };
 }
 
