@@ -16,6 +16,10 @@ OpenCode อ่านคีย์จากตัวแปร `OPENROUTER_API_KEY
 
 รูปแบบ permission ของ OpenCode เปลี่ยนตามรุ่น รุ่น 1 ใช้ `permission` กับ `bash` รุ่น 2 ใช้ `permissions` กับ `shell` ถ้ารุ่นที่ติดตั้งบ่น ให้ปรับตามข้อความ error แต่ยังต้องห้ามแก้ `scripts/quality-gate.js` และห้าม `git push`
 
+ห้ามแก้ `scripts/quality-gate.js` — ตัวตรวจตายตัว
+ห้าม `git push` เอง เว้นแต่ผู้เรียนสั่งหลังดู diff แล้ว
+ห้ามตั้ง `ANTHROPIC_API_KEY` หรือ `OPENROUTER_API_KEY` บน Vercel
+
 ## กติกา
 
 - ตอบเป็นภาษาของผู้ถาม ชื่อไฟล์ ชื่อ endpoint และชื่อฟิลด์คงภาษาอังกฤษ
@@ -23,7 +27,7 @@ OpenCode อ่านคีย์จากตัวแปร `OPENROUTER_API_KEY
 - แอปห้ามเพิ่ม dependency npm
 - ห้ามแก้ `scripts/quality-gate.js`
 - ห้าม `git push` เอง เว้นแต่ผู้เรียนสั่งหลังดู diff แล้ว
-- อย่าอ่านหรือคัดลอกค่าที่ขึ้นต้นด้วย `sk-`
+- อย่าอ่านหรือคัดลอกค่าที่ขึ้นต้นด้วย `sk-` และห้ามพิมพ์ค่าเหล่านี้ออกมาในคำตอบ, log หรือผลคำสั่ง (ถ้าจำเป็นต้องอ้างถึง ให้ปิดเป็น `sk-***`)
 - ก่อนบอกว่าเสร็จ ให้รัน `npm run gate` แล้วรายงาน exit code จริง
 - บนเครื่องผู้เรียน โน้ตต้องถูกเขียนลง `data/notes.json` เพื่อให้ด่าน `notes-persists` ผ่านหลังรีสตาร์ท ห้ามทำให้ด่านนี้หลวม
 - บน Vercel (`process.env.VERCEL`) โน้ตเป็นอ่านอย่างเดียว ห้ามเขียนไฟล์ และห้ามตั้ง `ANTHROPIC_API_KEY` หรือ `OPENROUTER_API_KEY`
