@@ -45,9 +45,9 @@ npm run verify       # ตรวจเครื่องและแอป (scri
 
 1. **Lab 01** — อ่านกติกานี้และ `AGENTS.md` ยังไม่แก้ `server.js`
 2. **Lab 02** — สำรวจพร้อมกันบน Claude Code ส่งรายงาน ไม่แก้ไฟล์
-3. **Lab 03** — `data-researcher` อ่านอย่างเดียวทั้ง Claude Code และ OpenCode
+3. **Lab 03** — สร้างผู้เชี่ยวชาญคนละสายงาน: `data-researcher` ฝั่ง Claude, `planner` ฝั่ง OpenCode
 4. **Lab 04** — ห้ามแก้ `scripts/quality-gate.js` และห้าม `git push`
-5. **Lab 05** — OpenCode ทำความสะอาดข้อมูลและยอดสรุป บั๊กโน้ตยังอยู่
+5. **Lab 05** — แผนจาก OpenCode (`docs/TASKS.md`) ส่งให้ทีม Claude ลงมือสามสาย ได้ยอดจริง บั๊กโน้ตยังอยู่
 6. **Lab 06** — Claude Code ปิดด่านให้ครบ 6/6
 7. **Lab 07** — กันคำสั่งอันตรายและงบ ด่านยัง 6/6
 8. **Lab 08** — เช็กลิสต์บน Claude, ความจำข้ามรอบบน OpenCode
