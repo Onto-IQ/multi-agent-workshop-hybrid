@@ -1,6 +1,10 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Registry Insight App
 
-แดชบอร์ดธุรกิจจดทะเบียนใหม่ในไทย สำหรับคลาสไฮบริด **Claude Code + OpenCode** (12–13 พฤศจิกายน 2026) สร้างจากข้อมูลจริง "นิติบุคคลที่จดทะเบียนจัดตั้งใหม่ พ.ศ. 2558" ของกรมพัฒนาธุรกิจการค้า จาก [data.go.th](https://data.go.th) ข้อมูลดิบอยู่ใน `data/raw/dbd-2558.parquet` ตารางแบนที่แอปอ่านคือ `data/dataset.csv` เซิร์ฟเวอร์ท้องถิ่นคือ `server.js` (Node `http` ล้วน ห้ามเพิ่ม dependency ของแอป) งานข้อมูลใช้ DuckDB ตามแล็บ
+แอปชื่อ **Registry Insight** — แดชบอร์ดธุรกิจจดทะเบียนใหม่ในไทย สำหรับคลาสไฮบริด **Claude Code + OpenCode** (12–13 พฤศจิกายน 2026) สร้างจากข้อมูลจริง "นิติบุคคลที่จดทะเบียนจัดตั้งใหม่ พ.ศ. 2558" ของกรมพัฒนาธุรกิจการค้า จาก [data.go.th](https://data.go.th) ข้อมูลดิบอยู่ใน `data/raw/dbd-2558.parquet` ตารางแบนที่แอปอ่านคือ `data/dataset.csv` เซิร์ฟเวอร์ท้องถิ่นคือ `server.js` (Node `http` ล้วน ห้ามเพิ่ม dependency ของแอป) งานข้อมูลใช้ DuckDB ตามแล็บ
 
 กติกาชุดเดียวกับไฟล์นี้อยู่ใน `AGENTS.md` สำหรับ OpenCode ถ้าแก้กฎฝั่งหนึ่ง ให้อัปเดตอีกฝั่งให้ตรงกัน
 
@@ -13,6 +17,27 @@
 - `lib/inspect-data.js` — กฎคุณภาพข้อมูลและตัวคำนวณยอดอ้างอิง (ชุดเดียวกับ quality gate)
 - วันแรกยังไม่มี `.mcp.json` วิทยากรสาธิต DuckDB MCP เอง
 - `scripts/quality-gate.js` — เกณฑ์ตรวจ 6 เคส ห้ามแก้ไฟล์นี้
+
+## คำสั่ง
+
+```bash
+npm start            # เซิร์ฟเวอร์ที่ http://127.0.0.1:3000 (PORT=3001 npm start / Windows: $env:PORT = 3001; npm start)
+npm run gate         # quality gate 6 เคส: exit 0 = ผ่านทุกเคส, exit 2 = ยังมีเคสแดง
+npm test             # node --test scripts/test-starter.js ตรวจชุดเริ่ม ไม่ต้องมีคีย์
+npm run verify       # ตรวจเครื่องและแอป (scripts/verify-setup.mjs)
+```
+
+- ไม่มีขั้น build หรือ lint และไม่มีการรันเคสเดียวของด่าน — รัน `npm run gate` ทั้งชุดเสมอ
+- ด่านจะ spawn `node server.js` เองบน `PORT` (ค่าเริ่ม 3000) ถ้าพอร์ตถูกใช้อยู่ (เช่นเปิด `npm start` ค้างไว้) เคสฝั่งเซิร์ฟเวอร์ทั้งหมดจะถูกนับว่าตก ให้ปิดเซิร์ฟเวอร์ก่อนรันด่าน
+- เช็กเครื่อง: `scripts/check-machine.ps1` (Windows) หรือ `scripts/check-machine.sh` (Mac/Linux) สคริปต์บอกแค่ความยาวคีย์ ไม่พิมพ์ค่า
+
+## สถาปัตยกรรมที่ต้องอ่านหลายไฟล์ถึงจะเห็น
+
+- ด่านเคส `data-quality` และยอดคาดหวังของ `summary-matches-valid-rows` มาจาก `analyze()` ใน `lib/inspect-data.js` ตัวเดียวกัน ยอดจาก `/api/summary` ต้องตรงกับแถวที่ผ่านกฎของ `analyze()` พอดี
+- `server.js` ชุดเริ่มอ่าน CSV ด้วย `naiveRecords` (split ตามลูกน้ำ ไม่รองรับเครื่องหมายคำพูด) และอ่านคอลัมน์ `capital_raw` แต่ตารางสะอาดตามสัญญาใน `data/README.md` ใช้คอลัมน์ `capital` — ตัวอ่าน CSV ที่ถูกต้องอยู่แล้วคือ `lib/csv.js`
+- สัญญาคอลัมน์ของ `data/dataset.csv` (`month, seq, reg_no, company_name, reg_date, capital, objective, address`) และกฎแต่ละข้ออยู่ใน `data/README.md` กับ `lib/inspect-data.js` การทำความสะอาดคือเขียนทับ `data/dataset.csv` จาก `data/raw/dbd-2558.parquet` ด้วย DuckDB (`data/warehouse.duckdb` มี view `businesses_raw`)
+- `/api/health` ชุดเริ่มคืน `SAMPLE_TOKEN` (ค่าตัวอย่าง ไม่ใช่คีย์จริง) จึงตกเคส `health-no-secrets` — ของจริงต้องคืนแค่ `{ ok: true }`
+- `server.js` export `{ server, notesAreReadOnly }` และ listen เฉพาะเมื่อ `require.main === module`
 
 ## แผนที่คลาส
 
@@ -58,7 +83,7 @@
 - งานสำรวจห้ามแก้ไฟล์
 - แอปห้ามเพิ่ม dependency npm เว้นแต่จะถูกขอ — งานข้อมูลใช้ DuckDB (CLI หรือ MCP) เท่านั้น
 - อย่าแนะนำ Express, ฐานข้อมูล หรือแพ็กเกจ npm เว้นแต่จะถูกขอ
-- อย่าอ่านหรือคัดลอกค่าที่ขึ้นต้นด้วย `sk-` ออกไปนอกโปรเจกต์
+- ห้ามพิมพ์ค่าที่ขึ้นต้นด้วย `sk-` ในคำตอบ log หรือไฟล์ใหม่ และอย่าอ่านหรือคัดลอกค่าแบบนี้ออกไปนอกโปรเจกต์ (รวมถึงอย่าเปิดอ่าน `.env`)
 - ห้ามแก้ `scripts/quality-gate.js` — ตัวตรวจตายตัว
 - ห้าม `git push` เอง เว้นแต่ผู้เรียนสั่งหลังดู diff แล้ว
 - ห้ามตั้ง `ANTHROPIC_API_KEY` หรือ `OPENROUTER_API_KEY` บน Vercel
