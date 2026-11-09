@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - ชุดเริ่มยังไม่มี `vercel.json` และไม่มีโฟลเดอร์ `api/` ผู้เรียนสร้างเองใน Lab 11 วิธีแนบ `data/dataset.csv` (ประมาณ 8 MB) ผ่าน `includeFiles` อยู่ที่ `reference/vercel/README.md` อย่าคัดลอกไฟล์นั้นขึ้นรากโปรเจกต์ก่อนแล็บนั้น
 - `data/dataset.csv` — ตารางแบนที่แอปอ่าน (ชุดเริ่มต้นยังไม่สะอาด)
 - `lib/inspect-data.js` — กฎคุณภาพข้อมูลและตัวคำนวณยอดอ้างอิง (ชุดเดียวกับ quality gate)
-- วันแรกยังไม่มี `.mcp.json` วิทยากรสาธิต DuckDB MCP เอง
+- `.mcp.json` (MCP DuckDB อ่านอย่างเดียว) จะถูกสร้างใน Module 08 — ก่อนหน้านั้นยังไม่มี
 - `scripts/quality-gate.js` — เกณฑ์ตรวจ 6 เคส ห้ามแก้ไฟล์นี้
 
 ## คำสั่ง
