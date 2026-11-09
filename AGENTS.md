@@ -8,8 +8,8 @@
 
 | งาน | เครื่องมือ |
 |---|---|
-| สำรวจ, ปิดด่าน 6/6, เช็กลิสต์, developer + teammates ลงมือสามสาย (Module 05), planner / developer / qa ในวันปิดงาน | Claude Code บัญชีของศูนย์ฝึก |
-| วางแผนสายการผลิต (`planner` เขียน `docs/TASKS.md`), ความจำข้ามรอบ, สรุปผู้บริหาร | OpenCode ผ่าน OpenRouter |
+| สำรวจ, ปิดด่าน 6/6, เช็กลิสต์, developer + teammates ลงมือสามสาย (Module 05), ความจำรายบทบาท `memory: project` (Module 10), planner / developer / qa ในวันปิดงาน | Claude Code บัญชีของศูนย์ฝึก |
+| วางแผนสายการผลิต (`planner` เขียน `docs/TASKS.md`), ความจำกลาง `docs/MEMORY.md`, สรุปผู้บริหาร | OpenCode ผ่าน OpenRouter |
 | ต่อ MCP DuckDB อ่านอย่างเดียว (Module 08) | Claude Code บัญชีของศูนย์ฝึก |
 
 OpenCode อ่านคีย์จากตัวแปร `OPENROUTER_API_KEY` ผ่าน `opencode.json` (`{env:OPENROUTER_API_KEY}`) ห้ามวางค่าคีย์ลงไฟล์ `ANTHROPIC_API_KEY` ต้องว่าง เพื่อไม่ให้ทับบัญชี Claude ของคลาส
