@@ -4,7 +4,7 @@
   // รุ่น 2 ใช้คีย์ "permissions" เป็นอาเรย์ และเปลี่ยน "bash" เป็น "shell"
   // ถ้ารุ่นที่ติดตั้งบ่นเรื่องรูปแบบ ให้ปรับตามข้อความ error
   // แต่ต้องยังห้ามแก้ scripts/quality-gate.js และห้าม git push
-  // ห้ามวางค่าคีย์ลงไฟล์ ใช้ {env:OPENROUTER_API_KEY} เท่านั้น
+  // ห้ามวางค่าคีย์ลงไฟล์ ทุกคีย์อ่านจากตัวแปรของเครื่องเท่านั้น
   // ANTHROPIC_API_KEY ต้องว่าง ผู้เรียนใช้บัญชี Claude ของศูนย์ฝึก
   "$schema": "https://opencode.ai/config.json",
   "model": "{env:OPENCODE_MODEL}",
@@ -12,6 +12,24 @@
     "openrouter": {
       "options": {
         "apiKey": "{env:OPENROUTER_API_KEY}"
+      }
+    }
+  },
+  // เกตเวย์ของศูนย์ฝึก แบบ openai-compatible
+  // คีย์อ่านอัตโนมัติจากตัวแปร ONTOIQ_API_KEY ของเครื่อง ห้ามใส่ค่าจริงลงไฟล์
+  // model id ต้องตรงกับที่ GET /v1/models ตอบมา
+  "providers": {
+    "ontoiq": {
+      "name": "OntoIQ",
+      "env": ["ONTOIQ_API_KEY"],
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "https://model.ontoiq.tech/v1"
+      },
+      "models": {
+        "spark-main": {
+          "name": "spark-main"
+        }
       }
     }
   },
